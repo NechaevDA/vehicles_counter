@@ -67,8 +67,8 @@ def train_bg_subtractor(inst, cap, num=500):
 
 if __name__ == '__main__':
     # настройки прогона, можно забирать из аргументов
-    file_name = 'videos/traffic2.avi'
-    verbose = False  # отображать ли информацию о работе
+    file_name = 'videos/traffic1.avi'
+    verbose = True  # отображать ли информацию о работе
     contour_area_limit = 400
 
     # информация о видеоролике

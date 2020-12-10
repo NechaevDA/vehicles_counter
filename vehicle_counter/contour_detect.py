@@ -27,12 +27,10 @@ class ContourDetect:
         # Расширение контуров для соединения соседей
         dilation = cv2.dilate(opening, kernel, iterations=2)
 
-        verbose_image = dilation.copy()
-
         # Пороговое отсечение
-        th = dilation[dilation < 240] = 0
+        ret, thresh = cv2.threshold(dilation, 127, 255, cv2.THRESH_BINARY)
 
-        contours, hierarchy = cv2.findContours(dilation.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_TC89_L1)
+        contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_TC89_L1)
 
         valid_cntrs = []
 
@@ -42,5 +40,7 @@ class ContourDetect:
             if ((2 * y + h)/2 >= self.border_line_y_top and (2 * y + h)/2 <= self.border_line_y_bottom) & (cv2.contourArea(cntr) >= self.contour_area_limit):
                 valid_cntrs.append(cntr)
                 # valid_cntrs.append(cv2.boundingRect(cntr))
+
+        verbose_image = thresh.copy()
 
         return valid_cntrs, verbose_image
