@@ -16,19 +16,20 @@ class ContourDetect:
     def detect_contours(self, frame):
         fgmask = self.bg_substractor.apply(frame)
 
+        # ядро функций эрозии, расширения, открытия и закрытия
         kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
 
-        # Fill any small holes
+        # Закрытие контуров
         closing = cv2.morphologyEx(fgmask, cv2.MORPH_CLOSE, kernel)
-        # Remove noise
+        # Удаление шумов
         opening = cv2.morphologyEx(closing, cv2.MORPH_OPEN, kernel)
 
-        # Dilate to merge adjacent blobs
+        # Расширение контуров для соединения соседей
         dilation = cv2.dilate(opening, kernel, iterations=2)
 
         verbose_image = dilation.copy()
 
-        # threshold
+        # Пороговое отсечение
         th = dilation[dilation < 240] = 0
 
         contours, hierarchy = cv2.findContours(dilation.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_TC89_L1)
