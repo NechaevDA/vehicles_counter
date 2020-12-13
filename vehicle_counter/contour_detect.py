@@ -17,18 +17,22 @@ class ContourDetect:
         fgmask = self.bg_substractor.apply(frame)
 
         # ядро функций эрозии, расширения, открытия и закрытия
-        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
 
         # Закрытие контуров
-        closing = cv2.morphologyEx(fgmask, cv2.MORPH_CLOSE, kernel)
+        # closing = cv2.morphologyEx(fgmask, cv2.MORPH_CLOSE, kernel)
         # Удаление шумов
-        opening = cv2.morphologyEx(closing, cv2.MORPH_OPEN, kernel)
+        # opening = cv2.morphologyEx(closing, cv2.MORPH_OPEN, kernel)
 
         # Расширение контуров для соединения соседей
-        dilation = cv2.dilate(opening, kernel, iterations=2)
+        # dilation = cv2.dilate(opening, kernel, iterations=2)
+        er1 = cv2.erode(fgmask, kernel, iterations=1)
+        dil1 = cv2.dilate(er1, kernel, iterations=5)
+        er2 = cv2.erode(dil1, kernel, iterations=4)
 
         # Пороговое отсечение
-        ret, thresh = cv2.threshold(dilation, 127, 255, cv2.THRESH_BINARY)
+        # ret, thresh = cv2.threshold(dilation, 127, 255, cv2.THRESH_BINARY)
+        ret, thresh = cv2.threshold(er2, 127, 255, cv2.THRESH_BINARY)
 
         contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_TC89_L1)
 
